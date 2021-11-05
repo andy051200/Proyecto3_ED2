@@ -23,6 +23,7 @@ unsigned char cuenta_p1, cuenta_p2, cuenta_p3, cuenta_p4;
  ------------ P R O T O T I P O S   D E   F U N C I O N E S -------------------
  -----------------------------------------------------------------------------*/
 void antirrebotes_parqueo(void);
+void display (int numero);
 /*-----------------------------------------------------------------------------
  --------------------- I N T E R R U P C I O N E S ----------------------------
  -----------------------------------------------------------------------------*/  
@@ -103,3 +104,100 @@ void loop() {
     
   }
  }
+
+//funcion para meter en el 7seg desde la esp-32
+//-------funcion para uso de 7 segmentos
+void display (int numero){
+  switch(numero){
+    case 0:
+      digitalWrite(2,1);  //A
+      digitalWrite(3,1);  //B
+      digitalWrite(4,1);  //C
+      digitalWrite(5,1);  //D
+      digitalWrite(6,1);  //E
+      digitalWrite(7,1);  //F
+      digitalWrite(8,0);  //G
+      break;
+    case 1:
+      digitalWrite(2,0);  //A
+      digitalWrite(3,1);  //B
+      digitalWrite(4,1);  //C
+      digitalWrite(5,0);  //D
+      digitalWrite(6,0);  //E
+      digitalWrite(7,0);  //F
+      digitalWrite(8,0);  //G
+      break;
+    case 2:
+      digitalWrite(2,1);  //A
+      digitalWrite(3,1);  //B
+      digitalWrite(4,0);  //C
+      digitalWrite(5,1);  //D
+      digitalWrite(6,1);  //E
+      digitalWrite(7,0);  //F
+      digitalWrite(8,1);  //G
+      break;
+    case 3:
+      digitalWrite(2,1);  //A
+      digitalWrite(3,1);  //B
+      digitalWrite(4,1);  //C
+      digitalWrite(5,1);  //D
+      digitalWrite(6,0);  //E
+      digitalWrite(7,0);  //F
+      digitalWrite(8,1);  //G
+      break;
+    case 4:
+      digitalWrite(2,0);  //A
+      digitalWrite(3,1);  //B
+      digitalWrite(4,1);  //C
+      digitalWrite(5,0);  //D
+      digitalWrite(6,0);  //E
+      digitalWrite(7,1);  //F
+      digitalWrite(8,1);  //G
+      break;
+    case 5:
+      digitalWrite(2,1);  //A
+      digitalWrite(3,0);  //B
+      digitalWrite(4,1);  //C
+      digitalWrite(5,1);  //D
+      digitalWrite(6,0);  //E
+      digitalWrite(7,1);  //F
+      digitalWrite(8,1);  //G
+      break;
+    case 6:
+      digitalWrite(2,1);  //A
+      digitalWrite(3,0);  //B
+      digitalWrite(4,1);  //C
+      digitalWrite(5,1);  //D
+      digitalWrite(6,1);  //E
+      digitalWrite(7,1);  //F
+      digitalWrite(8,1);  //G
+      break;
+    case 7:
+      digitalWrite(2,1);  //A
+      digitalWrite(3,1);  //B
+      digitalWrite(4,1);  //C
+      digitalWrite(5,0);  //D
+      digitalWrite(6,0);  //E
+      digitalWrite(7,0);  //F
+      digitalWrite(8,0);  //G
+      break;
+    case 8:
+      digitalWrite(2,1);  //A
+      digitalWrite(3,1);  //B
+      digitalWrite(4,1);  //C
+      digitalWrite(5,1);  //D
+      digitalWrite(6,1);  //E
+      digitalWrite(7,1);  //F
+      digitalWrite(8,1);  //G
+      break;
+    case 9:
+      digitalWrite(2,1);  //A
+      digitalWrite(3,1);  //B
+      digitalWrite(4,1);  //C
+      digitalWrite(5,1);  //D
+      digitalWrite(6,0);  //E
+      digitalWrite(7,1);  //F
+      digitalWrite(8,1);  //G
+      break;
+  }
+}
