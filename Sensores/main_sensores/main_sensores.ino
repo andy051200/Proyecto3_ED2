@@ -64,7 +64,7 @@ void setup() {
  -----------------------------------------------------------------------------*/
 void loop() {
   // put your main code here, to run repeatedly: 
-  
+  antirrebotes_parqueo();
 }
 /*-----------------------------------------------------------------------------
  ------------------------- F U N C I O N E S ----------------------------------
@@ -73,21 +73,33 @@ void loop() {
   //-------antirrebote para parqueo 1
   if (digitalRead(PD_0)==0 && antirrebote1==1){
     antirrebote1=0;
-    Serial.println("Boton para ");
+    Serial.println("sensor de parqueo 1");
+  }
+  else{
+    
   }
   //-------antirrebote para parqueo 2
   if (digitalRead(PD_1)==0 && antirrebote2==1){
     antirrebote2=0;
-    Serial.println("Boton para ");
+    Serial.println("sensor de parqueo 2");
+  }
+  else{
+    
   }
   //-------antirrebote para parqueo 3
   if (digitalRead(PD_2)==0 && antirrebote3==1){
     antirrebote3=0;
-    Serial.println("Boton para ");
+    Serial.println("sensor de parqueo 3");
+  }
+  else{
+    
   }
   //-------antirrebote para parqueo 4
   if (digitalRead(PD_3)==0 && antirrebote4==1){
     antirrebote4=0;
-    Serial.println("Boton para ");
+    Serial.println(" ");
+  }
+  else{
+    
   }
  }
