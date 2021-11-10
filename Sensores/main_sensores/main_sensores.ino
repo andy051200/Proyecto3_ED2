@@ -66,6 +66,18 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly: 
   antirrebotes_parqueo();
+  Serial.print("Parqueo 1: ");
+  Serial.print(cuenta_p1);
+  Serial.print("  |");
+  Serial.print("Parqueo 2: ");
+  Serial.print(cuenta_p2);
+  Serial.print(" | ");
+  Serial.print("Parqueo 3: ");
+  Serial.print(cuenta_p3);
+  Serial.print(" | ");
+  Serial.print("Total parqueos: ");
+  Serial.println(cuenta_p1+cuenta_p2+cuenta_p3);
+  
 }
 /*-----------------------------------------------------------------------------
  ------------------------- F U N C I O N E S ----------------------------------
@@ -73,27 +85,33 @@ void loop() {
  void antirrebotes_parqueo(void){
   //-------antirrebote para parqueo 1
   if (digitalRead(PD_0)==0 && antirrebote1==1){
-    antirrebote1=0;
-    Serial.println("sensor de parqueo 1");
+    //antirrebote1=0;
+    //Serial.println("parqueo 1 libre");
+    cuenta_p1=0;
   }
   else{
-    
+    //Serial.println("parqueo 1 ocupado");
+    cuenta_p1=1;
   }
   //-------antirrebote para parqueo 2
   if (digitalRead(PD_1)==0 && antirrebote2==1){
-    antirrebote2=0;
-    Serial.println("sensor de parqueo 2");
+    //antirrebote2=0;
+    //Serial.println("parqueo 2 libre");
+    cuenta_p2=0;
   }
   else{
-    
+    //Serial.println("parqueo 2 ocupado");
+    cuenta_p2=1;
   }
   //-------antirrebote para parqueo 3
   if (digitalRead(PD_2)==0 && antirrebote3==1){
-    antirrebote3=0;
-    Serial.println("sensor de parqueo 3");
+    //antirrebote3=0;
+    //Serial.println("parqueo 3 libre");
+    cuenta_p3=0;
   }
   else{
-    
+    //Serial.println("parqueo 3 ocupado");
+    cuenta_p3=1;
   }
   //-------antirrebote para parqueo 4
   if (digitalRead(PD_3)==0 && antirrebote4==1){
@@ -107,7 +125,7 @@ void loop() {
 
 //funcion para meter en el 7seg desde la esp-32
 //-------funcion para uso de 7 segmentos
-void display (int numero){
+/*void display (int numero){
   switch(numero){
     case 0:
       digitalWrite(2,1);  //A
@@ -200,4 +218,4 @@ void display (int numero){
       digitalWrite(8,1);  //G
       break;
   }
-}
+}*/
