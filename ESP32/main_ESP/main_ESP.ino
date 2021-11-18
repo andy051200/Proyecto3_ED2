@@ -31,13 +31,16 @@ void display (int numero);
  -----------------------------------------------------------------------------*/  
 void setup() {
   //-------ENTRADAS Y SALIDAS
-  pinMode(12, OUTPUT);           //A
-  pinMode(14, OUTPUT);           //B
-  pinMode(27, OUTPUT);           //C
-  pinMode(26, OUTPUT);           //D
-  pinMode(25, OUTPUT);           //E
-  pinMode(33, OUTPUT);           //F
-  pinMode(32, OUTPUT);           //G
+  pinMode(12, OUTPUT);           //A, arriba
+  pinMode(14, OUTPUT);           //B, arriba
+  pinMode(27, OUTPUT);           //C, abajo
+  pinMode(26, OUTPUT);           //D, abajo
+  pinMode(25, OUTPUT);           //E, abajo
+  pinMode(33, OUTPUT);           //F, arriba
+  pinMode(32, OUTPUT);           //G, abajo
+  pinMode(35, OUTPUT);           //transistor 1
+  pinMode(34, OUTPUT);           //transistor 2
+  pinMode(39, OUTPUT);           //transistor 3
 }
 /*-----------------------------------------------------------------------------
  -------------------------- M A I N   L O O P ---------------------------------
@@ -45,6 +48,28 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   display(1);
+  digitalWrite(35,0);
+  digitalWrite(34,1);
+  digitalWrite(39,1);
+  delay(100);
+ 
+  digitalWrite(35,1);
+  display(2);
+  digitalWrite(34,0);
+  //display(2);
+  digitalWrite(39,1);
+  //display(3);
+  delay(100);
+  /*
+  digitalWrite(35,1);
+  display(1);
+  digitalWrite(34,1);
+  display(2);
+  digitalWrite(39,0);
+  display(3);
+  delay(100);*/
+
+  /*
   delay(1000);
   display(2);
   delay(1000);
@@ -61,7 +86,7 @@ void loop() {
   display(8);
   delay(1000);
   display(9);
-  delay(1000);
+  delay(1000);*/
 }
 /*-----------------------------------------------------------------------------
  ------------------------- F U N C I O N E S ----------------------------------
