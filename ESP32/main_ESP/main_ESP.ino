@@ -38,55 +38,29 @@ void setup() {
   pinMode(25, OUTPUT);           //E, abajo
   pinMode(33, OUTPUT);           //F, arriba
   pinMode(32, OUTPUT);           //G, abajo
-  pinMode(35, OUTPUT);           //transistor 1
-  pinMode(34, OUTPUT);           //transistor 2
-  pinMode(39, OUTPUT);           //transistor 3
+  pinMode(15, OUTPUT);           //transistor 1
+  //pinMode(2, OUTPUT);           //transistor 2
+  //pinMode(4, OUTPUT);           //transistor 3
 }
 /*-----------------------------------------------------------------------------
  -------------------------- M A I N   L O O P ---------------------------------
  -----------------------------------------------------------------------------*/
 void loop() {
-  // put your main code here, to run repeatedly:
-  display(1);
-  digitalWrite(35,0);
-  digitalWrite(34,1);
-  digitalWrite(39,1);
-  delay(100);
- 
-  digitalWrite(35,1);
+  digitalWrite(2,0);
+  pinMode(15,INPUT);
   display(2);
-  digitalWrite(34,0);
-  //display(2);
-  digitalWrite(39,1);
-  //display(3);
-  delay(100);
-  /*
-  digitalWrite(35,1);
-  display(1);
-  digitalWrite(34,1);
-  display(2);
-  digitalWrite(39,0);
-  display(3);
-  delay(100);*/
+  delay(500);
 
-  /*
-  delay(1000);
-  display(2);
-  delay(1000);
+  digitalWrite(2,1);
+  pinMode(15,OUTPUT);
+  display(10);
+  delay(250);
+  
+  digitalWrite(2,1);
+  digitalWrite(15,0);
   display(3);
-  delay(1000);
-  display(4);
-  delay(1000);
-  display(5);
-  delay(1000);
-  display(6);
-  delay(1000);
-  display(7);
-  delay(1000);
-  display(8);
-  delay(1000);
-  display(9);
-  delay(1000);*/
+  delay(500);
+  
 }
 /*-----------------------------------------------------------------------------
  ------------------------- F U N C I O N E S ----------------------------------
@@ -94,6 +68,15 @@ void loop() {
  //-------funcion para uso de 7 segmentos
 void display (int numero){
   switch(numero){
+    case 10:
+      digitalWrite(12,0);  //A
+      digitalWrite(14,0);  //B
+      digitalWrite(27,0);  //C
+      digitalWrite(26,0);  //D
+      digitalWrite(25,0);  //E
+      digitalWrite(33,0);  //F
+      digitalWrite(32,0);  //G
+      break;
     case 0:
       digitalWrite(12,1);  //A
       digitalWrite(14,1);  //B
