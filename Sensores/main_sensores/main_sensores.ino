@@ -18,7 +18,7 @@ Descripcion: parqueo para 8 carros, 4 en una tiva y 4 en otros
  -----------------V A R I A B L E S   A   I M P L E M T E N T A R--------------
  -----------------------------------------------------------------------------*/
 unsigned char antirrebote1, antirrebote2, antirrebote3, antirrebote4;
-unsigned char cuenta_p1, cuenta_p2, cuenta_p3, cuenta_p4;
+unsigned char cuenta_p1, cuenta_p2, cuenta_p3, cuenta_p4, cuenta_parqueos,x;
 /*-----------------------------------------------------------------------------
  ------------ P R O T O T I P O S   D E   F U N C I O N E S -------------------
  -----------------------------------------------------------------------------*/
@@ -59,6 +59,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(PD_3), ISR_p4, FALLING);      //parqueo 4
   //-------CONFIGURACION DE COMUNICACION UART
   Serial.begin(9600);
+  Serial3.begin(9600);
 }
 /*-----------------------------------------------------------------------------
  -------------------------- M A I N   L O O P ---------------------------------
@@ -66,6 +67,11 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly: 
   antirrebotes_parqueo();
+
+  if (Serial3.available()){
+    Serial3.write(cuenta_parqueos+0x30);
+    Serial3.write(10);
+  }
   Serial.print("Parqueo 1: ");
   Serial.print(cuenta_p1);
   Serial.print("  |");
@@ -75,8 +81,12 @@ void loop() {
   Serial.print("Parqueo 3: ");
   Serial.print(cuenta_p3);
   Serial.print(" | ");
+  Serial.print("Parqueo 4: ");
+  Serial.print(cuenta_p4);
+  Serial.print(" | ");
   Serial.print("Total parqueos: ");
-  Serial.println(cuenta_p1+cuenta_p2+cuenta_p3);
+  cuenta_parqueos=cuenta_p1+cuenta_p2+cuenta_p3+cuenta_p4;
+  Serial.println(cuenta_parqueos);
   
 }
 /*-----------------------------------------------------------------------------
@@ -115,10 +125,10 @@ void loop() {
   }
   //-------antirrebote para parqueo 4
   if (digitalRead(PD_3)==0 && antirrebote4==1){
-    antirrebote4=0;
-    Serial.println(" ");
+    cuenta_p4=0;
   }
   else{  
+    cuenta_p4=1;
   }
  }
 
