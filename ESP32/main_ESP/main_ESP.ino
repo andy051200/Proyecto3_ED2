@@ -39,28 +39,29 @@ void setup() {
   pinMode(33, OUTPUT);           //F, arriba
   pinMode(32, OUTPUT);           //G, abajo
   pinMode(15, OUTPUT);           //transistor 1
-  //pinMode(2, OUTPUT);           //transistor 2
-  //pinMode(4, OUTPUT);           //transistor 3
+  pinMode(2, OUTPUT);           //transistor 2
+  //pinMode(4, OUTPUT);           //transistor 3+
+  digitalWrite(12,0);  //A
+  digitalWrite(14,0);  //B
+  digitalWrite(27,0);  //C
+  digitalWrite(26,0);  //D
+  digitalWrite(25,0);  //E
+  digitalWrite(33,0);  //F
+  digitalWrite(32,0);  //G
 }
 /*-----------------------------------------------------------------------------
  -------------------------- M A I N   L O O P ---------------------------------
  -----------------------------------------------------------------------------*/
 void loop() {
   digitalWrite(2,0);
-  pinMode(15,INPUT);
+  digitalWrite(15,1);
   display(2);
-  delay(500);
-
-  digitalWrite(2,1);
-  pinMode(15,OUTPUT);
-  display(10);
-  delay(250);
+  delay(1);
   
   digitalWrite(2,1);
   digitalWrite(15,0);
   display(3);
-  delay(500);
-  
+  delay(1);
 }
 /*-----------------------------------------------------------------------------
  ------------------------- F U N C I O N E S ----------------------------------
