@@ -48,10 +48,20 @@ void ISR_p4(){
  -----------------------------------------------------------------------------*/
 void setup() {
   //-------ENTRADAS Y SALIDAS
+  //entradas
   pinMode(PD_0, INPUT_PULLUP);                                        //parqueo 1
   pinMode(PD_1, INPUT_PULLUP);                                        //parqueo 2
   pinMode(PD_2, INPUT_PULLUP);                                        //parqueo 3
   pinMode(PD_3, INPUT_PULLUP);                                        //parqueo 4
+  //salidas
+  pinMode(PB_0, OUTPUT);                                              //led verde p1           
+  pinMode(PB_1, OUTPUT);                                              //led roja p1
+  pinMode(PE_4, OUTPUT);                                              //led verde p2
+  pinMode(PE_5, OUTPUT);                                              //led roja p2
+  pinMode(PB_4, OUTPUT);                                              //led verde p3
+  pinMode(PA_5, OUTPUT);                                              //led roja p3
+  pinMode(PA_6, OUTPUT);                                              //led verde p4
+  pinMode(PA_7, OUTPUT);                                              //led roja p4                 
   //-------CONFIGURACION INTERRUPCIONES
   attachInterrupt(digitalPinToInterrupt(PD_0), ISR_p1, FALLING);      //parqueo 1
   attachInterrupt(digitalPinToInterrupt(PD_1), ISR_p2, FALLING);      //parqueo 2
@@ -94,137 +104,47 @@ void loop() {
  -----------------------------------------------------------------------------*/
  void antirrebotes_parqueo(void){
   //-------antirrebote para parqueo 1
-  if (digitalRead(PD_0)==0 && antirrebote1==1){
-    //antirrebote1=0;
-    //Serial.println("parqueo 1 libre");
+  if (digitalRead(PD_0)==0 && antirrebote1==1){   //p1 libre
     cuenta_p1=0;
+    digitalWrite(PB_0,1);     //verde on
+    digitalWrite(PB_0,0);     //rojo off
   }
-  else{
-    //Serial.println("parqueo 1 ocupado");
+  else{                                           //p1 ocupado
     cuenta_p1=1;
+    digitalWrite(PB_0,0);     //verde off
+    digitalWrite(PB_0,1);     //rojo on
   }
   //-------antirrebote para parqueo 2
-  if (digitalRead(PD_1)==0 && antirrebote2==1){
-    //antirrebote2=0;
-    //Serial.println("parqueo 2 libre");
+  if (digitalRead(PD_1)==0 && antirrebote2==1){   //p2 libre
     cuenta_p2=0;
+    digitalWrite(PE_4,1);     //verde on
+    digitalWrite(PE_5,0);     //rojo off
   }
-  else{
-    //Serial.println("parqueo 2 ocupado");
+  else{                                           //p2 ocupado
     cuenta_p2=1;
+    digitalWrite(PE_4,0);     //verde off
+    digitalWrite(PE_5,1);     //rojo on
   }
   //-------antirrebote para parqueo 3
-  if (digitalRead(PD_2)==0 && antirrebote3==1){
-    //antirrebote3=0;
-    //Serial.println("parqueo 3 libre");
+  if (digitalRead(PD_2)==0 && antirrebote3==1){   //p3 libre
     cuenta_p3=0;
+    digitalWrite(PB_4,1);     //verde on
+    digitalWrite(PA_5,0);     //rojo off
   }
-  else{
-    //Serial.println("parqueo 3 ocupado");
+  else{                                           //p3 ocupado
     cuenta_p3=1;
+    digitalWrite(PB_4,1);     //verde on
+    digitalWrite(PA_5,0);     //rojo off
   }
   //-------antirrebote para parqueo 4
-  if (digitalRead(PD_3)==0 && antirrebote4==1){
+  if (digitalRead(PD_3)==0 && antirrebote4==1){     //p4 libre
     cuenta_p4=0;
+    digitalWrite(PA_6,1);     //verde on
+    digitalWrite(PA_7,0);     //rojo off
   }
-  else{  
+  else{                                             //p4 ocupado
     cuenta_p4=1;
+    digitalWrite(PA_6,0);     //verde off
+    digitalWrite(PA_7,1);     //rojo on
   }
  }
-
-//funcion para meter en el 7seg desde la esp-32
-//-------funcion para uso de 7 segmentos
-/*void display (int numero){
-  switch(numero){
-    case 0:
-      digitalWrite(2,1);  //A
-      digitalWrite(3,1);  //B
-      digitalWrite(4,1);  //C
-      digitalWrite(5,1);  //D
-      digitalWrite(6,1);  //E
-      digitalWrite(7,1);  //F
-      digitalWrite(8,0);  //G
-      break;
-    case 1:
-      digitalWrite(2,0);  //A
-      digitalWrite(3,1);  //B
-      digitalWrite(4,1);  //C
-      digitalWrite(5,0);  //D
-      digitalWrite(6,0);  //E
-      digitalWrite(7,0);  //F
-      digitalWrite(8,0);  //G
-      break;
-    case 2:
-      digitalWrite(2,1);  //A
-      digitalWrite(3,1);  //B
-      digitalWrite(4,0);  //C
-      digitalWrite(5,1);  //D
-      digitalWrite(6,1);  //E
-      digitalWrite(7,0);  //F
-      digitalWrite(8,1);  //G
-      break;
-    case 3:
-      digitalWrite(2,1);  //A
-      digitalWrite(3,1);  //B
-      digitalWrite(4,1);  //C
-      digitalWrite(5,1);  //D
-      digitalWrite(6,0);  //E
-      digitalWrite(7,0);  //F
-      digitalWrite(8,1);  //G
-      break;
-    case 4:
-      digitalWrite(2,0);  //A
-      digitalWrite(3,1);  //B
-      digitalWrite(4,1);  //C
-      digitalWrite(5,0);  //D
-      digitalWrite(6,0);  //E
-      digitalWrite(7,1);  //F
-      digitalWrite(8,1);  //G
-      break;
-    case 5:
-      digitalWrite(2,1);  //A
-      digitalWrite(3,0);  //B
-      digitalWrite(4,1);  //C
-      digitalWrite(5,1);  //D
-      digitalWrite(6,0);  //E
-      digitalWrite(7,1);  //F
-      digitalWrite(8,1);  //G
-      break;
-    case 6:
-      digitalWrite(2,1);  //A
-      digitalWrite(3,0);  //B
-      digitalWrite(4,1);  //C
-      digitalWrite(5,1);  //D
-      digitalWrite(6,1);  //E
-      digitalWrite(7,1);  //F
-      digitalWrite(8,1);  //G
-      break;
-    case 7:
-      digitalWrite(2,1);  //A
-      digitalWrite(3,1);  //B
-      digitalWrite(4,1);  //C
-      digitalWrite(5,0);  //D
-      digitalWrite(6,0);  //E
-      digitalWrite(7,0);  //F
-      digitalWrite(8,0);  //G
-      break;
-    case 8:
-      digitalWrite(2,1);  //A
-      digitalWrite(3,1);  //B
-      digitalWrite(4,1);  //C
-      digitalWrite(5,1);  //D
-      digitalWrite(6,1);  //E
-      digitalWrite(7,1);  //F
-      digitalWrite(8,1);  //G
-      break;
-    case 9:
-      digitalWrite(2,1);  //A
-      digitalWrite(3,1);  //B
-      digitalWrite(4,1);  //C
-      digitalWrite(5,1);  //D
-      digitalWrite(6,0);  //E
-      digitalWrite(7,1);  //F
-      digitalWrite(8,1);  //G
-      break;
-  }
-}*/
