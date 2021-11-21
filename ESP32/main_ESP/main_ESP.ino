@@ -17,9 +17,10 @@ Descripcion: parqueo para 8 carros, 4 en una tiva y 4 en otros
 /*-----------------------------------------------------------------------------
  ------------ P R O T O T I P O S   D E   F U N C I O N E S -------------------
  -----------------------------------------------------------------------------*/
-void display (int numero);
-void configurarTimer(void);
-
+void display (int numero);      //funcion para 7 segmentos
+void configurarTimer(void);     
+void serial0 (void);            //funcion para recepcion uart0
+void serial2 (void);            //funcion para recepcion uart2
  /*-----------------------------------------------------------------------------
  -----------------V A R I A B L E S   A   I M P L E M T E N T A R--------------
  -----------------------------------------------------------------------------*/
@@ -54,14 +55,7 @@ void setup() {
   pinMode(32, OUTPUT);           //G, abajo
   pinMode(15, OUTPUT);           //transistor 1
   pinMode(2, OUTPUT);           //transistor 2
-  //pinMode(4, OUTPUT);           //transistor 3+
-  digitalWrite(12,0);  //A
-  digitalWrite(14,0);  //B
-  digitalWrite(27,0);  //C
-  digitalWrite(26,0);  //D
-  digitalWrite(25,0);  //E
-  digitalWrite(33,0);  //F
-  digitalWrite(32,0);  //G
+  //-------PUERTOS SERIALES
   Serial.begin(9600);
   Serial2.begin(9600);
   configurarTimer();
@@ -70,34 +64,43 @@ void setup() {
  -------------------------- M A I N   L O O P ---------------------------------
  -----------------------------------------------------------------------------*/
 void loop() {
-  if (Serial.available()){
-    recibido_uart1 = Serial.read();
-    switch(recibido_uart1){
-      case 48:
+  //-------INVOCO FUNCIONES DE COMUNICACION SERIAL
+  serial0();    //puerto serial 0, tiva 1
+  serial2();    //puerto serial 2, tiva 2
+}
+/*-----------------------------------------------------------------------------
+ ------------------------- F U N C I O N E S ----------------------------------
+ -----------------------------------------------------------------------------*/
+//-------funcion para recepcion uart0
+void serial0 (void){
+  if (Serial.available()){            //ver si el puerto esta recibiendo datos
+    recibido_uart1 = Serial.read();   //sea lo que recibio se va a variable
+    switch(recibido_uart1){           //se evalua segun su valor
+      case 48:                        //CASO 0, OX48
         digitalWrite(2,0);
         digitalWrite(15,1);
         display(0);
         delay(10);
           break;
-      case 49:
+      case 49:                        //CASO 1
         digitalWrite(2,0);
         digitalWrite(15,1);
         display(1);
         delay(5);
         break;
-      case 50:
+      case 50:                        //CASO 2
         digitalWrite(2,0);
         digitalWrite(15,1);
         display(2);
         delay(5);
         break;
-      case 51:
+      case 51:                        //CASO 3
         digitalWrite(2,0);
         digitalWrite(15,1);
         display(3);
         delay(5);
         break;
-      case 52:
+      case 52:                         //CASO 4
         digitalWrite(2,0);
         digitalWrite(15,1);
         display(4);
@@ -109,34 +112,37 @@ void loop() {
     digitalWrite(15,0);
     display(9-recibido_uart1);
   }
-  if (Serial2.available()){
-    recibido_uart2 = Serial2.read();
-    switch(recibido_uart2){
-      case 48:
+}
+//-------funcion para recepcion uart2
+void serial2 (void){
+  if (Serial2.available()){           //ver si el puerto esta recibiendo datos
+    recibido_uart2 = Serial2.read();  //sea lo que recibio se va a variable
+    switch(recibido_uart2){           //se evalua segun su valor
+      case 48:                        //CASO 0
         digitalWrite(2,1);
         digitalWrite(15,0);
         display(0);
         delay(10);
         break;
-      case 49:
+      case 49:                        //CASO 1 
         digitalWrite(2,1);
         digitalWrite(15,0);
         display(1);
         delay(5);
         break;
-      case 50:
+      case 50:                        //CASO 2
         digitalWrite(2,1);
         digitalWrite(15,0);
         display(2);
         delay(5);
         break;
-      case 51:
+      case 51:                        //CASO 3
         digitalWrite(2,1);
         digitalWrite(15,0);
         display(3);
         delay(5);
         break;
-      case 52:
+      case 52:                        //CASO 4
         digitalWrite(2,1);
         digitalWrite(15,0);
         display(4);
@@ -148,12 +154,10 @@ void loop() {
     digitalWrite(15,1);
     display(8-recibido_uart2);
   }
-
+              
 }
-/*-----------------------------------------------------------------------------
- ------------------------- F U N C I O N E S ----------------------------------
- -----------------------------------------------------------------------------*/
- //-------funcion para uso de 7 segmentos
+
+//-------funcion para uso de 7 segmentos
 void display (int numero){
   switch(numero){
     case 10:

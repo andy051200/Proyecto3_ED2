@@ -65,23 +65,23 @@ void setup() {
  -------------------------- M A I N   L O O P ---------------------------------
  -----------------------------------------------------------------------------*/
 void loop() {
-  // put your main code here, to run repeatedly: 
+  //-------ANTIRREBOTE DE SENSORES
   antirrebotes_parqueo();
-
+  //-------ENVIO DE DATOS UART
   if (Serial3.available()){
     Serial3.write(cuenta_parqueos+0x30);
     Serial3.write(10);
   }
-  Serial.print("Parqueo 1: ");
+  Serial.print("P1: ");
   Serial.print(cuenta_p1);
   Serial.print("  |");
-  Serial.print("Parqueo 2: ");
+  Serial.print("P2: ");
   Serial.print(cuenta_p2);
   Serial.print(" | ");
-  Serial.print("Parqueo 3: ");
+  Serial.print("P3: ");
   Serial.print(cuenta_p3);
   Serial.print(" | ");
-  Serial.print("Parqueo 4: ");
+  Serial.print("P4: ");
   Serial.print(cuenta_p4);
   Serial.print(" | ");
   Serial.print("Total parqueos: ");
