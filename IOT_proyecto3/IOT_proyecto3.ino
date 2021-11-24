@@ -71,6 +71,7 @@ void setup(){
   pinMode(32, OUTPUT);           //G, abajo
   pinMode(15, OUTPUT);           //transistor 1
   pinMode(2, OUTPUT);           //transistor 2
+  pinMode(8, OUTPUT);           //transistor 3
   //-------CONFIGURACION DE COMUNICACION SERIAL
   Serial.begin(9600);
   Serial2.begin(9600);
@@ -115,8 +116,22 @@ void loop() {
     recibido_uart2 = Serial2.read();   //sea lo que recibio se va a variable
     parqueo2=recibido_uart2-0x30;
     parqueos=parqueo1+parqueo2;
+    digitalWrite(15,0);
+    digitalWrite(2,1);
+    digitalWrite(8,1);
+    display(parqueos);
+    delay(5);
+    digitalWrite(15,1);
     digitalWrite(2,0);
-    display(parqueos); 
+    digitalWrite(8,1);
+    display(parqueo1);
+    delay(5);
+    digitalWrite(15,1);
+    digitalWrite(2,1);
+    digitalWrite(8,0);
+    display(parqueo2);
+    delay(5); 
+    
   }
   
   //serial0();    //puerto serial 0, tiva 1
