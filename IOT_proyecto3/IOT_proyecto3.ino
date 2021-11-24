@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------------------  
-Archivo: main_sensores
-Microcontrolador: TM4C123
+Archivo: IOT_proyecto3
+Microcontrolador: ESP32
 Autor: Julio Avila, Andy Bonilla y Pablo Herrarte
-Compilador: Energia 1.8.11E23
+Compilador: Arduino IDE
 Programa: Proyecto 3
-Hardware: Launchpad Tiva C
+Hardware: ESP32
     
 Creado: 4 de noviembre de 2021    
 Descripcion: parqueo para 8 carros, 4 en una tiva y 4 en otros
@@ -22,7 +22,8 @@ Descripcion: parqueo para 8 carros, 4 en una tiva y 4 en otros
  ------------ P R O T O T I P O S   D E   F U N C I O N E S -------------------
  -----------------------------------------------------------------------------*/
 void display (int numero);      //funcion para 7 segmentos
-
+void serial0 (void);            //funcion para recepcion uart0
+void serial2 (void);            //funcion para recepcion uart2
  /*-----------------------------------------------------------------------------
  -----------------V A R I A B L E S   A   I M P L E M T E N T A R--------------
  -----------------------------------------------------------------------------*/
@@ -38,17 +39,24 @@ int cant = 0x30;
 int cant2 = 0x30;
 uint8_t LED1pin = 2;
 bool LED1status = LOW;
-
+unsigned char recibido_uart1, recibido_uart2;
+unsigned char parqueo1, parqueo2, parqueos;
 /*-----------------------------------------------------------------------------
  --------------------- I N T E R R U P C I O N E S ----------------------------
  -----------------------------------------------------------------------------*/  
-void Serial_ISR(){
-  cant = Serial.read();
+/*void Serial_ISR0(){
+  parqueo1 = Serial.read();
   //Serial.write("INT");
   server.send(200, "text/html", SendHTML(cant));
   return;
 }
 
+void Serial_ISR2(){
+  parqueo2 = Serial2.read();
+  //Serial.write("INT");
+  server.send(200, "text/html", SendHTML(cant));
+  return;
+}*/
 /*-----------------------------------------------------------------------------
  --------------------- C O N F I G U R A C I O N  ----------------------------
  -----------------------------------------------------------------------------*/  
@@ -66,8 +74,8 @@ void setup(){
   //-------CONFIGURACION DE COMUNICACION SERIAL
   Serial.begin(9600);
   Serial2.begin(9600);
-  attachInterrupt(digitalPinToInterrupt(3), Serial_ISR, CHANGE);
-    
+  //attachInterrupt(digitalPinToInterrupt(3), Serial_ISR0, CHANGE);
+  //attachInterrupt(digitalPinToInterrupt(16), Serial_ISR2, CHANGE);  
   //-------CONFIGURACION DE CONEXION WIFI  
   pinMode(LED1pin, OUTPUT);
   if (!SPIFFS.begin()) {
@@ -101,10 +109,132 @@ void setup(){
 void loop() {
   // put your main code here, to run repeatedly:
   server.handleClient(); 
+  if (Serial.available() && Serial2.available()){            //ver si el puerto esta recibiendo datos
+    recibido_uart1 = Serial.read();   //sea lo que recibio se va a variable
+    parqueo1=recibido_uart1-0x30;
+    recibido_uart2 = Serial2.read();   //sea lo que recibio se va a variable
+    parqueo2=recibido_uart2-0x30;
+    parqueos=parqueo1+parqueo2;
+    digitalWrite(2,0);
+    display(parqueos); 
+  }
+  
+  //serial0();    //puerto serial 0, tiva 1
+  //serial2();    //puerto serial 2, tiva 2
 }
 /*-----------------------------------------------------------------------------
  ------------------------- F U N C I O N E S ----------------------------------
  -----------------------------------------------------------------------------*/
+//-------funcion para recepcion uart0
+void serial0 (void){
+  if (Serial.available()){            //ver si el puerto esta recibiendo datos
+    recibido_uart1 = Serial.read();   //sea lo que recibio se va a variable
+    switch(recibido_uart1){           //se evalua segun su valor
+      case 48:                        //CASO 0, OX48
+        digitalWrite(2,0);
+        digitalWrite(15,1);
+        display(0);
+        delay(10);
+        break;
+      case 49:                        //CASO 1
+        digitalWrite(2,0);
+        digitalWrite(15,1);
+        display(1);
+        delay(5);
+        break;
+      case 50:                        //CASO 2
+        digitalWrite(2,0);
+        digitalWrite(15,1);
+        display(2);
+        delay(5);
+        break;
+      case 51:                        //CASO 3
+        digitalWrite(2,0);
+        digitalWrite(15,1);
+        display(3);
+        delay(5);
+        break;
+      case 52:                         //CASO 4
+        digitalWrite(2,0);
+        digitalWrite(15,1);
+        display(4);
+        delay(5);
+        break;
+      case 53:
+        digitalWrite(2,0);
+        digitalWrite(15,1);
+        display(5);
+        delay(5);
+        break;
+      case 54:
+        digitalWrite(2,0);
+        digitalWrite(15,1);
+        display(6);
+        delay(5);
+        break;
+      case 55:
+        digitalWrite(2,0);
+        digitalWrite(15,1);
+        display(7);
+        delay(5);
+        break;
+      case 56:
+        digitalWrite(2,0);
+        digitalWrite(15,1);
+        display(8);
+        delay(5);
+        break;
+    }
+    delay(30);
+    digitalWrite(2,1);
+    digitalWrite(15,0);
+    display(recibido_uart2);
+  }
+}
+//-------funcion para recepcion uart2
+void serial2 (void){
+  if (Serial2.available()){           //ver si el puerto esta recibiendo datos
+    recibido_uart2 = Serial2.read();  //sea lo que recibio se va a variable
+    switch(recibido_uart2){           //se evalua segun su valor
+      case 48:                        //CASO 0
+        digitalWrite(2,1);
+        digitalWrite(15,0);
+        display(0);
+        delay(10);
+        break;
+      case 49:                        //CASO 1 
+        digitalWrite(2,1);
+        digitalWrite(15,0);
+        display(1);
+        delay(5);
+        break;
+      case 50:                        //CASO 2
+        digitalWrite(2,1);
+        digitalWrite(15,0);
+        display(2);
+        delay(5);
+        break;
+      case 51:                        //CASO 3
+        digitalWrite(2,1);
+        digitalWrite(15,0);
+        display(3);
+        delay(5);
+        break;
+      case 52:                        //CASO 4
+        digitalWrite(2,1);
+        digitalWrite(15,0);
+        display(4);
+        delay(5);
+        break;
+    }
+    delay(30);
+    digitalWrite(2,0);
+    digitalWrite(15,1);
+    display(recibido_uart1);
+  }
+              
+}
+
 //-------funcion para uso de 7 segmentos
 void display (int numero){
   switch(numero){
@@ -229,33 +359,33 @@ String SendHTML(uint8_t cant1) {
   ptr += "<body>";
   ptr += "<h1>PARQUEO - CIT &#128664</h1>";
   ptr += "<h2>Electrónica Digital 2 - Proyecto 3</h2>";
-  ptr += "<h3>Julio Avila - Andy Bonilla</h3>";
-  switch(cant1){
-    case 0x30:
+  ptr += "<h3>Julio Avila - Andy Bonilla - Pablo Herrarte</h3>";
+  switch(recibido_uart1){
+    case 48:
     ptr += "<h3>Cantidad de Parqueos disponibles: 0</h3>";
     break;
-    case 0x31:
+    case 49:
     ptr += "<h3>Cantidad de Parqueos disponibles: 1</h3>";
     break;
-    case 0x32:
+    case 50:
     ptr += "<h3>Cantidad de Parqueos disponibles: 2</h3>";
     break;
-    case 0x33:
+    case 51:
     ptr += "<h3>Cantidad de Parqueos disponibles: 3</h3>";
     break;
-    case 0x34:
+    case 52:
     ptr += "<h3>Cantidad de Parqueos disponibles: 4</h3>";
     break;
-    case 0x35:
+    case 53:
     ptr += "<h3>Cantidad de Parqueos disponibles: 5</h3>";
     break;
-    case 0x36:
+    case 54:
     ptr += "<h3>Cantidad de Parqueos disponibles: 6</h3>";
     break;
-    case 0x37:
+    case 55:
     ptr += "<h3>Cantidad de Parqueos disponibles: 7</h3>";
     break;
-    case 0x38:
+    case 56:
     ptr += "<h3>Cantidad de Parqueos disponibles: 8</h3>";
     break;
     default:
