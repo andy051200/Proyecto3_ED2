@@ -13,36 +13,36 @@ Descripcion: parqueo para 8 carros, 4 en una tiva y 4 en otros
 /*-----------------------------------------------------------------------------
  ----------------------------L I B R E R I A S---------------------------------
  -----------------------------------------------------------------------------*/
-
+#include <WiFi.h>
+#include <WebServer.h>
 /*-----------------------------------------------------------------------------
  ------------ P R O T O T I P O S   D E   F U N C I O N E S -------------------
  -----------------------------------------------------------------------------*/
 void display (int numero);      //funcion para 7 segmentos
-void configurarTimer(void);     
-void serial0 (void);            //funcion para recepcion uart0
-void serial2 (void);            //funcion para recepcion uart2
+
  /*-----------------------------------------------------------------------------
  -----------------V A R I A B L E S   A   I M P L E M T E N T A R--------------
  -----------------------------------------------------------------------------*/
-#define prescaler 80
-hw_timer_t *timer = NULL;
+const char* ssid = "Casa Bonilla";  // Enter your SSID here
+const char* password = "losbonilla2021";  //Enter your Password here
+WebServer server(80);  // Object of WebServer(HTTP port, 80 is defult)
+
 unsigned char recibido_uart1,recibido_uart2,contadorTimer;
 char m1;
 char readData[2];
+int cant = 0x30;
+int cant2 = 0x30;
+int p1,p2,parqueos;
+uint8_t LED1pin = 2;
+bool LED1status = LOW;
+
+
 /*-----------------------------------------------------------------------------
  --------------------- I N T E R R U P C I O N E S ----------------------------
  -----------------------------------------------------------------------------*/  
-void IRAM_ATTR ISRTimer0() //interrupción para timer de displays
-{
-  contadorTimer++; //aumenta el contador de timer
 
-  if (contadorTimer > 2) //si es mayor a 2 regresa a cero
-  {
-    contadorTimer = 0;
-  }
-}
 /*-----------------------------------------------------------------------------
- --------------------- I N T E R R U P C I O N E S ----------------------------
+ --------------------- C O N F I G U R A C I O N  ----------------------------
  -----------------------------------------------------------------------------*/  
 void setup() {
   //-------ENTRADAS Y SALIDAS
@@ -56,105 +56,114 @@ void setup() {
   pinMode(15, OUTPUT);           //transistor 1
   pinMode(2, OUTPUT);           //transistor 2
   //-------PUERTOS SERIALES
-  Serial.begin(9600);
-  Serial2.begin(9600);
-  configurarTimer();
+  Serial.begin(115200);
+  Serial2.begin(115200);
+  WiFi.begin(ssid, password);   //se inicia la conexion wifi
+  // Check wi-fi is connected to wi-fi network
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected successfully");
+  Serial.print("Got IP: ");
+  Serial.println(WiFi.localIP());  //Show ESP32 IP on serial
+
+  server.on("/", handle_OnConnect); // Directamente desde e.g. 192.168.0.8
+  server.onNotFound(handle_NotFound);
+
+  server.begin();
+  Serial.println("HTTP server started");
+  delay(100);
 }
 /*-----------------------------------------------------------------------------
  -------------------------- M A I N   L O O P ---------------------------------
  -----------------------------------------------------------------------------*/
 void loop() {
-  //-------INVOCO FUNCIONES DE COMUNICACION SERIAL
-  serial0();    //puerto serial 0, tiva 1
-  serial2();    //puerto serial 2, tiva 2
+  //-------se inicia el servidor web
+  server.handleClient();
+  //-------lectura de puertos seriales
+  if (Serial.available()){
+    cant = Serial.read();
+    p1=cant-0x30;
+  }
+  if (Serial2.available()){
+    cant2 = Serial2.read();
+    p2=cant2-0x30;
+  }
+  parqueos=p1+p2;
+  server.send(200, "text/html", SendHTML(parqueos));
+  Serial.println(parqueos); 
+  display(parqueos);  
+  
 }
 /*-----------------------------------------------------------------------------
  ------------------------- F U N C I O N E S ----------------------------------
  -----------------------------------------------------------------------------*/
-//-------funcion para recepcion uart0
-void serial0 (void){
-  if (Serial.available()){            //ver si el puerto esta recibiendo datos
-    recibido_uart1 = Serial.read();   //sea lo que recibio se va a variable
-    switch(recibido_uart1){           //se evalua segun su valor
-      case 48:                        //CASO 0, OX48
-        digitalWrite(2,0);
-        digitalWrite(15,1);
-        display(0);
-        delay(10);
-          break;
-      case 49:                        //CASO 1
-        digitalWrite(2,0);
-        digitalWrite(15,1);
-        display(1);
-        delay(5);
-        break;
-      case 50:                        //CASO 2
-        digitalWrite(2,0);
-        digitalWrite(15,1);
-        display(2);
-        delay(5);
-        break;
-      case 51:                        //CASO 3
-        digitalWrite(2,0);
-        digitalWrite(15,1);
-        display(3);
-        delay(5);
-        break;
-      case 52:                         //CASO 4
-        digitalWrite(2,0);
-        digitalWrite(15,1);
-        display(4);
-        delay(5);
-        break;
-    }
-    delay(30);
-    digitalWrite(2,1);
-    digitalWrite(15,0);
-    display(9-recibido_uart1);
-  }
+//-------Handler de Inicio página
+void handle_OnConnect() {
+  server.send(200, "text/html", SendHTML(parqueos));
 }
-//-------funcion para recepcion uart2
-void serial2 (void){
-  if (Serial2.available()){           //ver si el puerto esta recibiendo datos
-    recibido_uart2 = Serial2.read();  //sea lo que recibio se va a variable
-    switch(recibido_uart2){           //se evalua segun su valor
-      case 48:                        //CASO 0
-        digitalWrite(2,1);
-        digitalWrite(15,0);
-        display(0);
-        delay(10);
-        break;
-      case 49:                        //CASO 1 
-        digitalWrite(2,1);
-        digitalWrite(15,0);
-        display(1);
-        delay(5);
-        break;
-      case 50:                        //CASO 2
-        digitalWrite(2,1);
-        digitalWrite(15,0);
-        display(2);
-        delay(5);
-        break;
-      case 51:                        //CASO 3
-        digitalWrite(2,1);
-        digitalWrite(15,0);
-        display(3);
-        delay(5);
-        break;
-      case 52:                        //CASO 4
-        digitalWrite(2,1);
-        digitalWrite(15,0);
-        display(4);
-        delay(5);
-        break;
-    }
-    delay(30);
-    digitalWrite(2,0);
-    digitalWrite(15,1);
-    display(8-recibido_uart2);
+
+//-------
+String SendHTML(int wenas) {
+  String ptr = "<!DOCTYPE html> <html>\n";
+
+  ptr += "  <head>\n";
+  ptr += "    <meta chatset=\"utf_8\">\n";
+  ptr += "    <title>PROYECTO 3</title>\n";
+  ptr += "    <script>\n";
+  ptr += "  <!--\n";
+  ptr += "  function timedRefresh(timeoutPeriod) {\n";
+  ptr += "  \tsetTimeout(\"location.reload(true);\",timeoutPeriod);\n";
+  ptr += "  }\n";
+  ptr += "\n";
+  ptr += "  window.onload = timedRefresh(5000);\n";
+  ptr += "\n";
+  ptr += "  //   -->\n";
+  ptr += "  </script>\n";
+ 
+  ptr += "      <h1 align='center'>PARQUEO CIT</h1>\n";
+  ptr += "      <h2 align='center'>Proyecto 3, Electronica Digital 2 </h2></th>\n";
+  ptr += "      <h2 align='center'>Julio Avila, Andy Bonilla, Pablo Herrarte </h2></th>\n";
+  switch(wenas){
+    case 0:
+      ptr += "<h2 align='center'>Cantidad de Parqueos disponibles: 0</h2>";
+      break;
+    case 1:
+      ptr += "<h2 align='center'>Cantidad de Parqueos disponibles: 1</h2>";
+      break;
+    case 2:
+      ptr += "<h2 align='center'>Cantidad de Parqueos disponibles: 2</h2>";
+      break;
+    case 3:
+      ptr += "<h2 align='center'>Cantidad de Parqueos disponibles: 3</h2>";
+      break;
+    case 4:
+      ptr += "<h2 align='center'>Cantidad de Parqueos disponibles: 4</h2>";
+      break;
+    case 5:
+      ptr += "<h2 align='center'>Cantidad de Parqueos disponibles: 5</h2>";
+      break;
+    case 6:
+      ptr += "<h2 align='center'>Cantidad de Parqueos disponibles: 6</h2>";
+      break;
+    case 7:
+      ptr += "<h2 align='center'>Cantidad de Parqueos disponibles: 7</h2>";
+      break;
+    case 8:
+      ptr += "<h2 align='center'>Cantidad de Parqueos disponibles: 8</h2>";
+      break;
   }
-              
+  ptr += "<img src='https://cdn.pixabay.com/photo/2016/12/31/01/43/auto-1941988_960_720.png'>";
+  ptr += "  </table>\n";
+  ptr += "  </html>\n";
+  ptr += "";
+  return ptr;
+}
+//-------Handler de not found
+void handle_NotFound() {
+  server.send(404, "text/plain", "Not found");
 }
 
 //-------funcion para uso de 7 segmentos
@@ -260,23 +269,4 @@ void display (int numero){
       digitalWrite(32,1);  //G
       break;
   }
-}
-//---
-void configurarTimer(void) //Timer para displays
-{
-  //Fosc = 80MHz = 80,000,000 Hz
-  //Fosc / Prescaler = 80,000,000 / 80 = 1,000,000
-  //Tosc = 1/Fosc = 1uS
-
-  //Timer 0, prescaler = 80, flanco de subida
-  timer = timerBegin(0, prescaler, true);
-
-  //Handler de la interrupción
-  timerAttachInterrupt(timer, &ISRTimer0, true);
-
-  //Tic = 1uS     1ms = 1000uS
-  timerAlarmWrite(timer, 1000, true);
-
-  //Inicia alarma
-  timerAlarmEnable(timer);
 }

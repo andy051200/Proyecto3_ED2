@@ -68,8 +68,8 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(PD_2), ISR_p3, FALLING);      //parqueo 3
   attachInterrupt(digitalPinToInterrupt(PD_3), ISR_p4, FALLING);      //parqueo 4
   //-------CONFIGURACION DE COMUNICACION UART
-  Serial.begin(9600);
-  Serial3.begin(9600);
+  Serial.begin(115200);
+  Serial3.begin(115200);
 }
 /*-----------------------------------------------------------------------------
  -------------------------- M A I N   L O O P ---------------------------------
@@ -77,28 +77,15 @@ void setup() {
 void loop() {
   //-------ANTIRREBOTE DE SENSORES
   antirrebotes_parqueo();
+  digitalWrite(PB_0, HIGH);
   //-------ENVIO DE DATOS UART
   if (Serial3.available()){
     Serial3.write(cuenta_parqueos+0x30);
-    Serial3.write(10);
+    //Serial3.write(10);                    //separador de coma de caracteres
   }
-  Serial.print("P1: ");
-  Serial.print(cuenta_p1);
-  Serial.print("  |");
-  Serial.print("P2: ");
-  Serial.print(cuenta_p2);
-  Serial.print(" | ");
-  Serial.print("P3: ");
-  Serial.print(cuenta_p3);
-  Serial.print(" | ");
-  Serial.print("P4: ");
-  Serial.print(cuenta_p4);
-  Serial.print(" | ");
-  Serial.print("Total parqueos: ");
   cuenta_parqueos=cuenta_p1+cuenta_p2+cuenta_p3+cuenta_p4;
-  Serial.println(cuenta_parqueos);
-  
-}
+  Serial.println(cuenta_parqueos+0x30);
+} 
 /*-----------------------------------------------------------------------------
  ------------------------- F U N C I O N E S ----------------------------------
  -----------------------------------------------------------------------------*/
@@ -106,45 +93,45 @@ void loop() {
   //-------antirrebote para parqueo 1
   if (digitalRead(PD_0)==0 && antirrebote1==1){   //p1 libre
     cuenta_p1=0;
-    digitalWrite(PB_0,1);     //verde on
-    digitalWrite(PB_0,0);     //rojo off
+    digitalWrite(PB_0,HIGH);     //verde on
+    digitalWrite(PB_0,LOW);     //rojo off
   }
   else{                                           //p1 ocupado
     cuenta_p1=1;
-    digitalWrite(PB_0,0);     //verde off
-    digitalWrite(PB_0,1);     //rojo on
+    digitalWrite(PB_0,HIGH);     //verde off
+    digitalWrite(PB_0,LOW);     //rojo on
   }
   //-------antirrebote para parqueo 2
   if (digitalRead(PD_1)==0 && antirrebote2==1){   //p2 libre
     cuenta_p2=0;
-    digitalWrite(PE_4,1);     //verde on
-    digitalWrite(PE_5,0);     //rojo off
+    digitalWrite(PE_4,HIGH);     //verde on
+    digitalWrite(PE_5,LOW);     //rojo off
   }
   else{                                           //p2 ocupado
     cuenta_p2=1;
-    digitalWrite(PE_4,0);     //verde off
-    digitalWrite(PE_5,1);     //rojo on
+    digitalWrite(PE_4,HIGH);     //verde off
+    digitalWrite(PE_5,LOW);     //rojo on
   }
   //-------antirrebote para parqueo 3
   if (digitalRead(PD_2)==0 && antirrebote3==1){   //p3 libre
     cuenta_p3=0;
-    digitalWrite(PB_4,1);     //verde on
-    digitalWrite(PA_5,0);     //rojo off
+    digitalWrite(PB_4,HIGH);     //verde on
+    digitalWrite(PA_5,LOW);     //rojo off
   }
   else{                                           //p3 ocupado
     cuenta_p3=1;
-    digitalWrite(PB_4,1);     //verde on
-    digitalWrite(PA_5,0);     //rojo off
+    digitalWrite(PB_4,HIGH);     //verde on
+    digitalWrite(PA_5,LOW);     //rojo off
   }
   //-------antirrebote para parqueo 4
   if (digitalRead(PD_3)==0 && antirrebote4==1){     //p4 libre
     cuenta_p4=0;
-    digitalWrite(PA_6,1);     //verde on
-    digitalWrite(PA_7,0);     //rojo off
+    digitalWrite(PA_6,HIGH);     //verde on
+    digitalWrite(PA_7,LOW);     //rojo off
   }
   else{                                             //p4 ocupado
     cuenta_p4=1;
-    digitalWrite(PA_6,0);     //verde off
-    digitalWrite(PA_7,1);     //rojo on
+    digitalWrite(PA_6,LOW);     //verde off
+    digitalWrite(PA_7,HIGH);     //rojo on
   }
  }
