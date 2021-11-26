@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------------------  
 Archivo: main_sensores
-Microcontrolador: TM4C123
+Microcontrolador: ESP32
 Autor: Julio Avila, Andy Bonilla y Pablo Herrarte
-Compilador: Energia 1.8.11E23
+Compilador: Arduino IDE
 Programa: Proyecto 3
-Hardware: Launchpad Tiva C
+Hardware: ESP32
     
 Creado: 4 de noviembre de 2021    
 Descripcion: parqueo para 8 carros, 4 en una tiva y 4 en otros
